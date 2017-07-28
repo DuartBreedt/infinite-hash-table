@@ -1,0 +1,101 @@
+// GLOBALS
+
+// Table sizes for each fractal
+const TABLE_SIZE = 191;
+
+// Number of calls to find() before the tables arre optimised
+// If == 0 optimise only occurs if called explicitly
+const ACCESSES_UNTIL_OPTIMISE = 100;
+
+// If any accessCounter reaches specified value all accessCounters are reset
+// Purpose is to ensure old access data isn't considered in optimising tables
+// Combines "Most frequently used" and "Most recently used" principles
+// If == 0 accessCounter fields are only reset when reset() is called explicitly
+const ACCESSES_UNTIL_RESET = 1000;
+
+// First table to insert values into
+T* headArray = new T[TABLE_SIZE];
+
+
+// FUNCTIONS
+
+// INSERT: 
+// 1. Set myArr = headArray
+// 2. Call dig()
+void insert ( T value ) { ... }
+
+// DIG (Recursive call for insert()): 
+// 1. Call hash()
+// 2. Attempt to insert in myArr
+// 3. If myArr[hashedValue].value != null: 
+//		a. If myArr[hashedValue].array != null	
+// 			i. 		Set myArr = myArr[hashedValue].array
+// 			ii. 	Increment level
+// 			iii. 	Call dig() again
+//		b. Else if myArr[hashedValue].array == null
+//			i. 		Call myArr[hashedValue].array = createFractal();
+//			11.		set myArr = myArr[hashedValue].array
+// 4. If there is no collision
+//		a. myArr[hashedValue].value = value
+void dig (T* arr, int level, T value) { ... }
+
+// CREATE FRACTAL:
+// 1. Create an array of size TABLE_SIZE and return it
+T* createFractal () { ... }
+
+// HASH:
+// 1. Perform a hash function incorporating level ( Select a prime number above 191 E.g. 0 = 191, 1 = 193, 2 = 197, etc ) 
+// and the value.
+// 2. Consider having a overloaded function which takes the previous hash value as well for greater randomisation
+// 3. Mod by TABLE_SIZE
+// 4. Return hashed value
+void hash ( int level, T value ) { ... }
+
+// DELETE:
+// 1. Call thisNode = find( value )
+// 2. If thisNode.array != null
+// 		a. Find a node that has no array (foundNode)
+// 		b. Set thisNode.value = foundNode.value
+// 		c. Set thisNode.accessCounter = foundNode.accessCounter
+// 		d. Set foundNode's place in its parent's array to null
+// 3. Else if thisNode.array == null
+//		a. Set thisNode's place in its parent's array to null
+//		b. If thisNode's parent's array is now empty, set it to null
+void delete ( T value ) { ... }
+
+// FIND:
+// 1. Call hash
+// 2. If value = arr[hashedValue].value
+// 		a. Increment arr[hashedValue].accessCounter
+//		b. Check if accessCounter mod optimise constant == 0 and optimise if necessary (Consider constant == 0)
+//		c. Check if accessCounter >= reset constant and reset if necessary (Consider constant == 0)
+//		d. return arr[hashedValue]
+// 3. If arr[hashedValue] != null: 
+// 		a. Increment level
+// 		b. Call find() again with arr[hashedValue].array as an arguement
+// 4. If arr[hashedValue] == null
+// 		a. Return null
+Node find ( T* arr, T value, int level ) { ... }
+
+// FIND PARENT:
+// 1.
+Node findParent ( T* arr, T value, int level ) { ... }
+
+// OPTIMISE:
+// 1. Checks all accessCounters
+// 2. If accessCounter < child's accessCounter then swap the two data values and accessCounter values
+// 3. If a swap is made for a values trace through its arrays then set a flag to redo that trace
+// 4. Repeat this process for all values in headArray
+void optimise () { ... }
+
+// RESET:
+// 1. Set all accessCounters to 0
+void reset () { ... }
+
+// STRUCTURES
+
+ class Node {
+ 	T value
+ 	T array
+ 	T accessCounter
+ }
